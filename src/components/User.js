@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "./Modal";
 
 const User = ({ setUserList, userList }) => {
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [user, setUser] = useState({
     username: "",
     age: "",
@@ -21,8 +21,15 @@ const User = ({ setUserList, userList }) => {
   };
   // Submit Handler
   const submitHandler = (e) => {
+    const isFormEmpty =
+      user.username.trim().length === 0 && user.age.trim().length === 0;
     e.preventDefault();
-    setUserList([...userList, user]);
+    !isFormEmpty && setUserList([...userList, user]);
+    // Modal conditional
+    if (isFormEmpty) {
+      setIsModalVisible(true);
+    }
+    // Clear inputs
     setUser((prevState) => {
       return {
         ...prevState,
@@ -31,11 +38,6 @@ const User = ({ setUserList, userList }) => {
         id: Math.floor(Math.random() * 100),
       };
     });
-  };
-
-  // Toggle Modal
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
   };
 
   return (
@@ -61,7 +63,7 @@ const User = ({ setUserList, userList }) => {
         </label>
         <button type="submit">Add a user</button>
       </form>
-      {isModalVisible && <Modal toggleModal={toggleModal} />}
+      {isModalVisible && <Modal closeModal={setIsModalVisible} />}
     </>
   );
 };
